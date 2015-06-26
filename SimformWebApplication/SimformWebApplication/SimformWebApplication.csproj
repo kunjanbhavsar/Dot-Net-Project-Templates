@@ -67,6 +67,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\CommonBAL.cs" />
     <Compile Include="Core\CommonHelper.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\EmailHelper.cs" />
