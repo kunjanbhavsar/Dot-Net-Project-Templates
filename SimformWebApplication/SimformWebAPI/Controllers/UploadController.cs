@@ -19,7 +19,42 @@ namespace VisitorManagement.Controllers
 {
     public class UploadController : ApiController
     {
+        [HttpPost, ActionName("UploadMultipartImage40")]
+        public async System.Threading.Tasks.Task<HttpResponseMessage> UploadMultipartImage40()
+        {
+            // Check if the request contains multipart/form-data.
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
 
+            string root = System.Web.HttpContext.Current.Server.MapPath("~/AppMedia/Temp/");
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            try
+            {
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                string fileName = Convert.ToString(provider.FormData["fileName"]);
+                string filePath = Convert.ToString(provider.FormData["filePath"]);
+
+                // This illustrates how to get the file names.
+                foreach (MultipartFileData fileData in provider.FileData)
+                {
+                    //File.Move(fileData.LocalFileName, Path.Combine(root, fileName));
+
+                    string destinationPath = System.Web.HttpContext.Current.Server.MapPath("~" + filePath);
+
+                    File.Move(fileData.LocalFileName, Path.Combine(destinationPath, fileName));
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (System.Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
     
         [HttpPost, ActionName("UploadMultipartImage")]
         public async Task<HttpResponseMessage> UploadMultipartImage()
